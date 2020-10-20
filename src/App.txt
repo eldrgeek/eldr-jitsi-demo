@@ -1,0 +1,189 @@
+import React from "react";
+import "./styles.css";
+import Jitsi from "react-jitsi";
+import WebTiming from "./WebTiming";
+// import JitsiHandler from './JtsiHandler';
+const roomName = "HootnetDesignTeam";
+const userFullName = "Mike Wolf";
+let xto;
+export default function App() {
+  const [api, setAPI] = React.useState(null);
+  // const [lastID, setLastID] = React.useState(null);
+  const [time, setTime] = React.useState(null);
+  const [to, setTimingObject] = React.useState(null);
+  // const [tick, setTick] = React.useState(0);
+  const reportEvent = (event) => {
+    const receiptTime = xto.query().position;
+    if (event) {
+      console.log("ENDPOINT EVENT IS NOW", event.data);
+      const message = JSON.parse(event.data.eventData.text);
+      console.log("TEXT TIME", message.time);
+      console.log("DELTA", ((receiptTime - message.time) * 1000).toFixed(1));
+    }
+    console.log(" Times", receiptTime);
+  };
+  React.useEffect(() => {
+    // setInterval(reportEvent, 1000);
+    const wt = new WebTiming();
+    wt.onTimingObject = (newTo) => {
+      setTimingObject(newTo);
+      xto = newTo;
+      // console.log("New to")
+      // Hook up text UI
+      newTo.on("timeupdate", function () {
+        var v = newTo.query();
+        // console.log("new time")
+        setTime(v);
+      });
+    };
+    xto = to;
+    // }
+    // wt.setRun(run, setTime);
+  }, []); // eslint-disable-line
+  const reset = () => {
+    to.update({ position: 0.0 });
+    to.update({ velocity: 1.0, acceleration: 0.0 });
+  };
+  const toggleChat = () => {
+    if (api) {
+      api.executeCommand("toggleChat");
+    }
+  };
+  const startRecording = () => {
+    console.log("Recording");
+    api.executeCommand("startRecording", {
+      mode: "stream", //recording mode, either `file` or `stream`.
+      // dropboxToken: string, //dropbox oauth2 token.
+      // shouldShare: boolean, //whether the recording should be shared with the participants or not. Only applies to certain jitsi meet deploys.
+      youtubeStreamKey: "y8ra-pg6s-vbe9-3wer-66bp", //the youtube stream key.
+      youtubeBroadcastID: "rtmp://a.rtmp.youtube.com/live2" //the youtube broacast ID.
+    });
+  };
+  const sendtoAll = () => {
+    xto = to;
+    const info = api.getParticipantsInfo();
+    console.log("INFO is ", info);
+    info.forEach((session) => {
+      const id = session.participantId;
+      const lastTime = to.query().position.toFixed(8);
+      console.log("ID Is", id, lastTime, time.position);
+      api.executeCommand(
+        "sendEndpointTextMessage",
+        id,
+        JSON.stringify({ time: lastTime })
+      );
+    });
+  };
+
+  const handleAPI = (api) => {
+    setAPI(api);
+    api.addEventListener("endpointTextMessageReceived", (event) => {
+      reportEvent(event);
+    });
+    api.addEventListener("incomingMessage", (event) => {
+      console.log("Incominggg message", event);
+    });
+    api.addEventListener("participantJoined", (event) => {
+      // setLastID(event.id);
+      // 	api.executeCommand(
+      // 		'sendEndpointTextMessage',
+      // 		event.id,
+      // 		'Welcome to the meeting ' + event.displayName
+      // 	);
+      // 	console.log('Joined', event);
+    });
+
+    api.addEventListener("participantLeft", (event) => {
+      console.log("left", event);
+    });
+  };
+  // const handleClick = (e) => {
+  // 	console.log('click', e.target);
+  // };
+  return (
+    <div className="App">
+      <button onClick={startRecording}> Record </button>
+      <button onClick={toggleChat}> Toggle Chat </button>
+      <button onClick={sendtoAll}>Send</button>
+      <button onClick={reset}>Reset</button>
+
+      <div id="position" style={{ fontWeight: "bold" }}>
+        {time ? time.position.toFixed(3) : ""}
+      </div>
+      {/* <Jitsi
+				// style={{display:"block"}}
+				onClick={handleClick}
+				roomName={roomName + 'oringal'}
+				displayName={userFullName}
+				interfaceConfig={{}}
+				onAPILoad={handleAPI}
+			/> */}
+      {/* <JitsiHandler /> */}
+      <Jitsi
+        // style={{display:"block"}}
+        roomName={roomName}
+        displayName={userFullName}
+        onAPILoad={handleAPI}
+        options={{}}
+        config={{
+          brandingDataUrl: "https://singalong.vercel.app",
+          brandingRoomAlias: "someAlias",
+          enableAutomaticUrlCopy: false,
+          // requireDisplayName: false,
+          prejoinPageEnabled: false,
+          localRecording: {
+            enabled: true,
+            format: "ogg"
+          },
+          fileRecordingsEnabled: true,
+          liveStreamingEnabled: true
+        }}
+        interfaceConfig={{
+          MOBILE_APP_PROMO: false,
+          // HIDE_INVITE_MORE_HEADER: true
+          TOOLBAR_BUTTONS: [
+            "microphone",
+            "camera",
+            "localrecording",
+            "NOT closedcaptions",
+            "desktop",
+            "NOT embedmeeting",
+            "fullscreen",
+            "fodeviceselection",
+            "hangup",
+            "profile",
+            "chat",
+            "NO recording",
+            "livestreaming",
+            "NOT etherpad",
+            "sharedvideo",
+            "settings",
+            "NO raisehand",
+            "videoquality",
+            "filmstrip",
+            "NOT invite",
+            "NOT feedback",
+            "NO stats",
+            "shortcuts",
+            "tileview",
+            "NO videobackgroundblur",
+            "download",
+            "NO help",
+            "NO mute-everyone",
+            "NO security"
+          ]
+        }}
+      />
+    </div>
+  );
+}
+
+/*
+
+
+export const App = () => (
+  <>
+    <h2>My First Meeting!</h2>
+  </>
+)
+*/
