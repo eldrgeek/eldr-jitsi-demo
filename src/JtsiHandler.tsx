@@ -65,14 +65,15 @@ export default function App({
 		to.update({ velocity: 1.0, acceleration: 0.0 });
 	};
 	const toggleChat = () => {
+		//@ts-ignore
 		if (api) {
+			//@ts-ignore
 			api.executeCommand('toggleChat');
 		}
 	};
 	const startRecording = () => {
 		console.log('Recording');
 		//@ts-ignore
-
 		api.executeCommand('startRecording', {
 			mode: 'stream', //recording mode, either `file` or `stream`.
 			// dropboxToken: string, //dropbox oauth2 token.
@@ -120,6 +121,65 @@ export default function App({
 	// };
 
 	//@ ts-ignore
+	const jitsiConfig: any = {
+		// requireDisplayName: false,
+		prejoinPageEnabled: false,
+		localRecording: {
+			enabled: true,
+			format: 'ogg'
+		},
+		fileRecordingsEnabled: true,
+		liveStreamingEnabled: true
+	};
+
+	const interfaceConfig: any = {
+		MOBILE_APP_PROMO: false,
+		SHOW_BRAND_WATERMARK: true,
+
+		BRAND_WATERMARK_LINK: '',
+		SHOW_JITSI_WATERMARK: false,
+
+		DEFAULT_BACKGROUND: '#000',
+		JITSI_WATERMARK_LINK: 'https://singalong.vercel.app',
+		// JITSI_WATERMARK_LINK: 'https://jitsi.org',
+
+		// HIDE_INVITE_MORE_HEADER: true
+		// @ts-ignore
+		TOOLBAR_BUTTONS: [
+			// @ts-ignore
+			'microphone',
+			'camera',
+			'localrecording',
+			'NOT closedcaptions',
+			'desktop',
+			'NOT embedmeeting',
+			'NOT fullscreen',
+			'fodeviceselection',
+			'hangup',
+			'profile',
+			'chat',
+			'NO recording',
+			'livestreaming',
+			'NOT etherpad',
+			'sharedvideo',
+			'settings',
+			'NO raisehand',
+			'videoquality',
+			'filmstrip',
+			'NOT invite',
+			'NOT feedback',
+			'NO stats',
+			'shortcuts',
+			'tileview',
+			'NO videobackgroundblur',
+			'download',
+			'NO help',
+			'NO mute-everyone',
+			'NO security'
+		]
+	};
+	//@ ts-ignore
+	console.log('User IS ', userName);
 	return (
 		<div className="App">
 			<button onClick={startRecording}> Record </button>
@@ -132,65 +192,13 @@ export default function App({
 			</div>
 
 			<Jitsi
-				// style={{display:"block"}}
 				roomName={roomName}
 				displayName={userName}
 				onAPILoad={handleAPI}
-				options={{}}
-				config={{
-					// requireDisplayName: false,
-					prejoinPageEnabled: false,
-					localRecording: {
-						enabled: true,
-						format: 'ogg'
-					},
-					fileRecordingsEnabled: true,
-					liveStreamingEnabled: true
-				}}
-				interfaceConfig={{
-					MOBILE_APP_PROMO: false,
-					SHOW_BRAND_WATERMARK: true,
-
-					BRAND_WATERMARK_LINK: '',
-					SHOW_JITSI_WATERMARK: false,
-
-					DEFAULT_BACKGROUND: '#000',
-					JITSI_WATERMARK_LINK: 'https://singalong.vercel.app',
-					// JITSI_WATERMARK_LINK: 'https://jitsi.org',
-
-					// HIDE_INVITE_MORE_HEADER: true
-					TOOLBAR_BUTTONS: [
-						'microphone',
-						'camera',
-						'localrecording',
-						'NOT closedcaptions',
-						'desktop',
-						'NOT embedmeeting',
-						'NOT fullscreen',
-						'fodeviceselection',
-						'hangup',
-						'profile',
-						'chat',
-						'NO recording',
-						'livestreaming',
-						'NOT etherpad',
-						'sharedvideo',
-						'settings',
-						'NO raisehand',
-						'videoquality',
-						'filmstrip',
-						'NOT invite',
-						'NOT feedback',
-						'NO stats',
-						'shortcuts',
-						'tileview',
-						'NO videobackgroundblur',
-						'download',
-						'NO help',
-						'NO mute-everyone',
-						'NO security'
-					]
-				}}
+				// @ts-ignore
+				config={jitsiConfig}
+				// @ts-ignore
+				interfaceConfig={interfaceConfig}
 			/>
 		</div>
 	);

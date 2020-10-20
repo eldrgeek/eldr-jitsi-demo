@@ -2,7 +2,7 @@ import React from 'react';
 import { useQueryState } from 'use-location-state';
 import JitsiHandler from './JtsiHandler';
 import { TextField } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ServerStyleSheets } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -15,10 +15,11 @@ const useStyles = makeStyles((theme) => ({
 const Test = () => {
 	const [counting, setCounting] = React.useState(true);
 
-	const [roomx, setRoomx] = useQueryState('room', 'HotnetDesignTeam');
-	const [userx, setUserx] = useQueryState('user', 'Mike');
-	const [room, setRoom] = React.useState('HotnetDesignTeam');
-	const [user, setUser] = React.useState('Mike');
+	const [room, setRoom] = useQueryState('room', 'HootnetDesignTeam');
+	const [user, setUser] = useQueryState('user', 'Mike');
+	const [editRoomName, setEditRoomName] = React.useState(room);
+	const [editUserName, setEditUserName] = React.useState(user);
+	const [displayRoom, setDisplayRoom] = React.useState(true);
 	const classes = useStyles();
 
 	React.useEffect(() => {
@@ -68,37 +69,49 @@ const Test = () => {
 			</button>
 			<button
 				onClick={() => {
-					setRoom(roomx);
-					setUser(userx);
+					setRoom(editRoomName);
+					setUser(editUserName);
+					setDisplayRoom(false);
+					setTimeout(() => setDisplayRoom(true), 1000);
 				}}
 			>
 				Join
 			</button>
+
 			<form className={classes.root} noValidate autoComplete="off">
 				<div>
 					<TextField
-						id="standard-room"
-						label="Room"
-						value={roomx}
-						onChange={setRoomx}
+						id="standard-editRoomName"
+						label="room"
+						value={editRoomName}
+						onChange={(e) => setEditRoomName(e.target.value)}
 					/>
 				</div>
 				<div>
 					<TextField
-						id="standard-user"
+						id="standard-editUserName"
 						label="User"
-						value={userx}
-						onChange={setUserx}
+						value={editUserName}
+						onChange={(e) => setEditUserName(e.target.value)}
 					/>
 				</div>
 			</form>
-			<JitsiHandler roomName={room} userName={user} index={1} getApi={getApi} />
-			<JitsiHandler
-				roomName={room + '-alt'}
-				userName={user + '-alt'}
-				index={2}
-				getApi={getApi}
-			/>
+			{displayRoom ? (
+				<React.Fragment>
+					<JitsiHandler
+						index={1}
+						roomName={room}
+						userName={user}
+						getApi={getApi}
+					/>
+					<JitsiHandler
+						roomName={room + '-alt'}
+						userName={user + '-alt'}
+						index={2}
+						getApi={getApi}
+					/>
+				</React.Fragment>
+			) : null}
 		</div>
 	);
 };
