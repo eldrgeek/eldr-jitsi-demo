@@ -1,4 +1,10 @@
 .App {
-  font-family: sans-serif;
-  text-align: center;
+	font-family: sans-serif;
+	text-align: center;
 }
+
+/* @import 'tailwindcss/base';
+
+@import 'tailwindcss/components';
+
+@import 'tailwindcss/utilities'; */

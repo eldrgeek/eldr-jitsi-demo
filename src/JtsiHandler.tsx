@@ -179,7 +179,6 @@ export default function App({
 		]
 	};
 	//@ ts-ignore
-	console.log('User IS ', userName);
 	return (
 		<div className="App">
 			<button onClick={startRecording}> Record </button>
