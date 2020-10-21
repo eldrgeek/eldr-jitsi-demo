@@ -2,9 +2,15 @@ import React from 'react';
 const buildInfo = {
 	0: {
 		title: 'Build info',
-		text: `When you go to the website, you'll see
-    you a list of all the changes since the last time 
-    that you visited on that device.`
+		text: `When you go to the website and there 
+		have been changes since your last visit on that
+		device you'll see a button that says "What's new". 
+
+		If you Click it you will see a list of all the changes since the last time 
+		that you visited on that device.
+
+		Click the "Close" and you'll continue.
+		`
 	},
 	1: {
 		title: 'Change rooms',
@@ -19,25 +25,36 @@ const buildInfo = {
     If you want to change rooms later, you can click 'Leave'`
 	}
 };
-const BuildInfo = () => {
+const BuildInfo = ({ lastBuild }) => {
 	return (
-		<div>
-			{Object.keys(buildInfo).map((key, index) => {
-				const item = buildInfo[key];
-				console.log(item);
-				return (
-					<div key={index}>
-						<h1 className="leading-tight text-2xl py-0 px-4"> {item.title}</h1>
-						{item.text.split('\n\n').map((para, index) => {
-							return (
-								<p className="font-serif px-4 text-base leading-tight pb-2">
-									{para}
-								</p>
-							);
-						})}
-					</div>
-				);
-			})}
+		<div className="m-2 p-2">
+			<div className="pl-4 mb-2">
+				Your last build on this device was build {lastBuild + 1}
+				<br />
+				Here's what's happened since then:
+			</div>
+			{Object.keys(buildInfo)
+				.filter((key) => {
+					console.log(key, typeof lastBuild);
+					return parseInt(key, 10) >= lastBuild;
+				})
+				.map((key, index) => {
+					const item = buildInfo[key];
+					return (
+						<div key={index}>
+							<h1 className="leading-tight text-xl py-0 px-4">
+								{parseInt(key) + 1} {item.title}
+							</h1>
+							{item.text.split('\n\n').map((para, index) => {
+								return (
+									<p className="font-serif px-4 text-base leading-tight pb-2">
+										{para}
+									</p>
+								);
+							})}
+						</div>
+					);
+				})}
 		</div>
 	);
 };
