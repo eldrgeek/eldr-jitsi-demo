@@ -9,8 +9,9 @@ import BuildInfo from './BuildInfo';
 // import './styles.css';
 // import 'tailwindcss';
 const buildNo = 1;
+const showPostButton = false;
 const buttonClass =
-	'border text-white bg-blue-400 border-black m-1 mx-2 p-1 px-3 w-16 rounded-lg shadow-sm';
+	'border text-white bg-blue-400 border-black m-1 mx-2 p-1 px-3 w-18 rounded-lg shadow-sm';
 
 const lastBuild = get<number>('buildNo');
 set<number>('buldNo', buildNo);
@@ -32,7 +33,7 @@ const Test = () => {
 	const [room, setRoom] = useQueryState('room', 'HootnetDesignTeam');
 	const [user, setUser] = useQueryState('user', 'Mike');
 	const [changeRoom, setChangeRoom] = React.useState(false);
-	const [roomConnected, setRoomConnected] = React.useState(false);
+	const [roomConnected, setRoomConnected] = React.useState(true);
 	const classes = useStyles();
 
 	React.useEffect(() => {
@@ -75,80 +76,92 @@ const Test = () => {
 				{buildNo !== lastBuild? <BuildInfo />: null}
 				</motion.div> */}
 			<div className="flex flex-col items-center bg-gray-200">
-				<div className="flex ">
-					<button
-						className={buttonClass}
-						onClick={() => {
-							console.log('Origin', window.location.origin);
-							setCounting(true);
-							window.postMessage('This is the message', window.location.origin);
-						}}
-					>
-						Post
-					</button>
+				<div id="button-container" className="">
+					{showPostButton ? (
+						<button
+							className={buttonClass}
+							onClick={() => {
+								console.log('Origin', window.location.origin);
+								setCounting(true);
+								window.postMessage(
+									'This is the message',
+									window.location.origin
+								);
+							}}
+						>
+							Post
+						</button>
+					) : null}
 					<button
 						className={buttonClass}
 						onClick={() => {
 							if (changeRoom) {
-								setTimeout(() => setRoomConnected(false), 2000);
+								setTimeout(() => setRoomConnected(true), 1000);
 							} else {
 								// setRoom(editRoomName);
 								// setUser(editUserName);
-								setRoomConnected(true);
+								setRoomConnected(false);
 							}
 							setChangeRoom(!changeRoom);
 							// setTimeout(() => setChangeRoom(true), 1000);
 						}}
 					>
-						{!changeRoom ? 'Join' : 'Leave'}
+						{changeRoom ? 'Join' : 'Switch'}
 					</button>
 				</div>
-				<motion.div
-					initial={{ x: -500 }}
-					animate={{ x: changeRoom ? -500 : 0 }}
-					transition={{ ease: 'easeOut', duration: 1 }}
-				>
-					<form className={classes.root} noValidate autoComplete="off">
-						<div>
-							<TextField
-								id="standard-editRoomName"
-								label="Enter name of room"
-								value={room}
-								onChange={(e) => setRoom(e.target.value)}
-							/>
-						</div>
-						<div>
-							<TextField
-								id="standard-editUserName"
-								label="Enter the user's name"
-								value={user}
-								onChange={(e) => setUser(e.target.value)}
-							/>
-						</div>
-					</form>
-				</motion.div>
-				{roomConnected ? (
-					<motion.div
-						initial={{ x: 1000 }}
-						animate={{ x: changeRoom ? 0 : 1000 }}
-						transition={{ ease: 'easeOut', duration: 1 }}
-					>
-						<React.Fragment>
-							<JitsiHandler
-								index={1}
-								roomName={room}
-								userName={user}
-								getApi={getApi}
-							/>
-							<JitsiHandler
-								roomName={room + '-alt'}
-								userName={user + '-alt'}
-								index={2}
-								getApi={getApi}
-							/>
-						</React.Fragment>
-					</motion.div>
+				{changeRoom ? (
+					<div id="room-form" className="mt-4 p-10 border border-black">
+						<motion.div
+							className=""
+							// initial={{ scale: 0 }}
+							// animate={{ scale: changeRoom ? 0 : 1 }}
+							// transition={{ ease: 'easeOut', duration: 1 }}
+						>
+							<form className={classes.root} noValidate autoComplete="off">
+								<div>
+									<TextField
+										id="standard-editRoomName"
+										label="Enter name of room"
+										value={room}
+										onChange={(e) => setRoom(e.target.value)}
+									/>
+								</div>
+								<div>
+									<TextField
+										id="standard-editUserName"
+										label="Enter the user's name"
+										value={user}
+										onChange={(e) => setUser(e.target.value)}
+									/>
+								</div>
+							</form>
+						</motion.div>
+					</div>
 				) : null}
+				<div id="jitsi-container">
+					{roomConnected ? (
+						<motion.div
+						// initial={{ x: 0 }}
+						// animate={{ x: !changeRoom ? 0 : -500 }}
+						// transition={{ ease: 'easeOut', duration: 1 }}
+						>
+							<React.Fragment>
+								<JitsiHandler
+									index={1}
+									roomName={room}
+									userName={user}
+									getApi={getApi}
+								/>
+								{/* <JitsiHandler
+									roomName={room + '-alt'}
+									userName={user + '-alt'}
+									index={2}
+									getApi={getApi}
+								/> */}
+							</React.Fragment>
+						</motion.div>
+					) : null}
+				</div>
 			</div>
 		</div>
 	);
