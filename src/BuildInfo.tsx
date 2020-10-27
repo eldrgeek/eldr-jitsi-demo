@@ -23,13 +23,17 @@ const buildInfo = {
     that room.
     
     If you want to change rooms later, you can click 'Leave'`
+	},
+	2: {
+		title: 'Start on CSB',
+		text: `When deploying on CSB show the change dialog`
 	}
 };
 const BuildInfo = ({ lastBuild }) => {
 	return (
 		<div className="m-2 p-2">
 			<div className="pl-4 mb-2">
-				Your last build on this device was build {lastBuild + 1}
+				Your last build on this device was build {lastBuild}
 				<br />
 				Here's what's happened since then:
 			</div>

@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import BuildInfo from './BuildInfo';
 // import './styles.css';
 // import 'tailwindcss';
-const thisBuild = 2;
+const thisBuild = 3;
 const showPostButton = false;
 const buttonClass =
 	'border text-white bg-blue-400 border-black m-1 mx-2 p-1 px-3 w-18 rounded-lg shadow-sm';
@@ -25,12 +25,14 @@ const Test = () => {
 
 	const [room, setRoom] = useQueryState('room', 'HootnetDesignTeam');
 	const [user, setUser] = useQueryState('user', 'Mike');
-	const [changeRoom, setChangeRoom] = React.useState(false);
-	const [roomConnected, setRoomConnected] = React.useState(true);
+	const shouldShowChange = !!window.location.origin.match(/csb\.app$/);
+	console.log('show', window.location, shouldShowChange);
+	const [changeRoom, setChangeRoom] = React.useState(shouldShowChange);
+	const [roomConnected, setRoomConnected] = React.useState(!shouldShowChange);
 	const [showAdvanced, setShowAdvanced] = React.useState(false);
 	const [showNew, setShowNew] = React.useState('button');
 	const [lastBuild, setLastBuild] = React.useState(get<number>('lastBuild'));
-
+	const [animation, setAnimation] = React.useState('initial');
 	const classes = useStyles();
 
 	React.useEffect(() => {

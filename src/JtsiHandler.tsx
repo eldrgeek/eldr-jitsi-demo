@@ -133,14 +133,14 @@ export default function App({
 	};
 
 	const interfaceConfig: any = {
-		MOBILE_APP_PROMO: false,
-		SHOW_BRAND_WATERMARK: true,
+		// MOBILE_APP_PROMO: false,
+		// SHOW_BRAND_WATERMARK: false,
 
-		BRAND_WATERMARK_LINK: '',
+		// BRAND_WATERMARK_LINK: '',
 		SHOW_JITSI_WATERMARK: false,
 
 		DEFAULT_BACKGROUND: '#000',
-		JITSI_WATERMARK_LINK: 'https://singalong.vercel.app',
+		JITSI_WATERMARK_LINK: '',
 		// JITSI_WATERMARK_LINK: 'https://jitsi.org',
 
 		// HIDE_INVITE_MORE_HEADER: true
@@ -153,7 +153,7 @@ export default function App({
 			'NOT closedcaptions',
 			'desktop',
 			'NOT embedmeeting',
-			'NOT fullscreen',
+			'fullscreen',
 			'fodeviceselection',
 			'hangup',
 			'profile',
