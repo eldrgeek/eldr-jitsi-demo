@@ -27,6 +27,10 @@ const buildInfo = {
 	2: {
 		title: 'Start on CSB',
 		text: `When deploying on CSB show the change dialog`
+	},
+	3: {
+		title: 'Full screen',
+		text: `Full screen selection appears on settings menu`
 	}
 };
 const BuildInfo = ({ lastBuild }) => {
