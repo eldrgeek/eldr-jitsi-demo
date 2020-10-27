@@ -125,7 +125,7 @@ const Test = () => {
 									// setTimeout(() => setChangeRoom(true), 1000);
 								}}
 							>
-								{changeRoom ? 'Join' : 'Switch'}
+								{changeRoom ? 'Joined' : 'Switch'}
 							</button>
 							<button
 								className={buttonClass}
